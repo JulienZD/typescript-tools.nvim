@@ -140,19 +140,22 @@ function M.handler(request, response, params, ctx)
     })
   end
 
-  -- HACK: Move all extract refactors to the end (this is mostly "Move to a new file"), as a workaround to
-  -- place the "Add import" action as the first one, since it's the most common action.
-  local refactor_extract_actions = {}
+  -- HACK: Move "Add import" to the front, as it's the most common action
+
+  -- @type table | nil
+  local add_import_action = nil
 
   for key, action in ipairs(code_actions) do
-    if action.kind == c.CodeActionKind.RefactorExtract then
-      table.insert(refactor_extract_actions, action)
+    if
+      action.kind == c.CodeActionKind.QuickFix and string.find(action.title, "Add import from")
+    then
+      add_import_action = action
       code_actions[key] = nil
     end
   end
 
-  for _, action in ipairs(refactor_extract_actions) do
-    table.insert(code_actions, action)
+  if add_import_action then
+    table.insert(code_actions, 1, add_import_action)
   end
 
   response(code_actions)
