@@ -140,6 +140,21 @@ function M.handler(request, response, params, ctx)
     })
   end
 
+  -- HACK: Move all extract refactors to the end (this is mostly "Move to a new file"), as a workaround to
+  -- place the "Add import" action as the first one, since it's the most common action.
+  local refactor_extract_actions = {}
+
+  for key, action in ipairs(code_actions) do
+    if action.kind == c.CodeActionKind.RefactorExtract then
+      table.insert(refactor_extract_actions, action)
+      code_actions[key] = nil
+    end
+  end
+
+  for _, action in ipairs(refactor_extract_actions) do
+    table.insert(code_actions, action)
+  end
+
   response(code_actions)
 end
 
