@@ -140,22 +140,36 @@ function M.handler(request, response, params, ctx)
     })
   end
 
-  -- HACK: Move "Add import" to the front, as it's the most common action
+  -- HACK: Move "Add import" and "Update import" to the front, as they're the most commonly used actions
 
   -- @type table | nil
   local add_import_action = nil
+  local update_import_action = nil
 
   for key, action in ipairs(code_actions) do
-    if
-      action.kind == c.CodeActionKind.QuickFix and string.find(action.title, "Add import from")
-    then
+    if action.kind ~= c.CodeActionKind.QuickFix then
+      goto continue
+    end
+
+    if string.find(action.title, "Add import from") then
       add_import_action = action
       code_actions[key] = nil
     end
+
+    if string.find(action.title, "Update import from") then
+      update_import_action = action
+      code_actions[key] = nil
+    end
+    ::continue::
   end
 
   if add_import_action then
     table.insert(code_actions, 1, add_import_action)
+  end
+
+  if update_import_action then
+    -- Update import takes precedence over add import
+    table.insert(code_actions, 1, update_import_action)
   end
 
   response(code_actions)
