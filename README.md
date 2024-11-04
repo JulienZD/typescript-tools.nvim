@@ -1,6 +1,11 @@
 <h1 align="center">typescript-tools.nvim</h1>
 <p align="center"><sup>⚡ TypeScript integration NeoVim deserves ⚡</sup></p>
 
+## Note
+
+This is a fork of [pmizio/typescript-tools.nvim](https://github.com/pmizio/typescript-tools.nvim) with the addition of
+a hack to place "Add/Update import ..." actions at the top of the list of code actions.
+
 ### 🚧 Warning 🚧
 
 Please note that the plugin is currently in the early beta version, which means you may encounter
@@ -25,8 +30,6 @@ bugs.
 - 💅 Provides out-of-the-box support for styled-components, which is not enabled by default
   (see Installation and [Configuration](#-styled-components-support))
 - ✨ Improved code refactor capabilities e.g. extracting to variable or function
-
-![code_action](https://github.com/pmizio/typescript-tools.nvim/assets/4346598/50f87c54-c286-473d-ba3d-886ac97ca072)
 
 ### 🚀 How it works?
 
@@ -90,7 +93,7 @@ In summary, the architecture of this plugin can be visualized as shown in the di
 
 ```lua
 {
-  "pmizio/typescript-tools.nvim",
+  "JulienZD/typescript-tools.nvim",
   dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
   opts = {},
 }
@@ -100,7 +103,7 @@ In summary, the architecture of this plugin can be visualized as shown in the di
 
 ```lua
 use {
-  "pmizio/typescript-tools.nvim",
+  "JulienZD/typescript-tools.nvim",
   requires = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
   config = function()
     require("typescript-tools").setup {}
@@ -243,7 +246,7 @@ require("typescript-tools").setup {
   </p>
 </details>
 
-The default values for `preferences` and `format_options` are in [this file](https://github.com/pmizio/typescript-tools.nvim/blob/master/lua/typescript-tools/config.lua#L17)
+The default values for `preferences` and `format_options` are in [this file](https://github.com/JulienZD/typescript-tools.nvim/blob/master/lua/typescript-tools/config.lua#L17)
 
 #### 💅 `styled-components` support
 
@@ -326,11 +329,6 @@ This plugin provides several custom user commands (they are only applied to curr
 | ❌     | window/showMessage - N/A                                  |
 | ❌     | window/showMessageRequest - N/A                           |
 
-## 🚦 Roadmap
-
-- `textDocument/linkedEditingRange` - [#32](https://github.com/pmizio/typescript-tools.nvim/pull/32)
-- Embedded language support(JS inside of HTML) - [#43](https://github.com/pmizio/typescript-tools.nvim/pull/43)
-
 ## 🔨 Development
 
 Useful links:
@@ -354,6 +352,7 @@ make file=test_spec.lua test
 
 ## 💐 Credits
 
+- https://github.com/pmizio/typescript-tools.nvim - For the original, as this is merely a fork
 - [null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)
   \- for the idea to monkeypatch nvim API to start a custom LSP I/O loop
 - [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server)
