@@ -147,6 +147,11 @@ function M.handler(request, response, params, ctx)
   local update_import_action = nil
 
   for key, action in ipairs(code_actions) do
+    -- HACK: Remove "Move to a new file" action, as it's not useful in most cases
+    if string.find(action.title, "Move to a new file") then
+      code_actions[key] = nil
+    end
+
     if action.kind ~= c.CodeActionKind.QuickFix then
       goto continue
     end
