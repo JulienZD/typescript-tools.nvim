@@ -147,8 +147,12 @@ function M.handler(request, response, params, ctx)
   local update_import_action = nil
 
   for key, action in ipairs(code_actions) do
-    -- HACK: Remove "Move to a new file" action, as it's not useful in most cases
-    if string.find(action.title, "Move to a new file") then
+    -- HACK: Remove some code actions, as they're not really useful
+    if
+      string.find(action.title, "Move to a new file")
+      or string.find(action.title, "Move to file")
+      or string.find(action.title, "Change spelling to")
+    then
       code_actions[key] = nil
     end
 
