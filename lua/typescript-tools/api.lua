@@ -274,7 +274,8 @@ function M.jsx_close_tag(bufnr, params, cb, pre_request_id)
 end
 
 ---@param is_sync boolean
-function M.file_references(is_sync)
+---@param opts? vim.lsp.ListOpts
+function M.file_references(is_sync, opts)
   a.void(function()
     local client = utils.get_typescript_client(0)
 
@@ -282,14 +283,45 @@ function M.file_references(is_sync)
       return
     end
 
-    local err, result = async.buf_request_isomorphic(
+    local _, result = async.buf_request_isomorphic(
       is_sync,
       0,
       c.CustomMethods.FileReferences,
       { textDocument = vim.lsp.util.make_text_document_params() }
     )
 
-    vim.lsp.handlers[c.LspMethods.Reference](err, result, { client_id = client.id })
+    if not result or vim.tbl_isempty(result) then
+      vim.notify "No references found"
+      return
+    end
+
+    local all_items = vim.lsp.util.locations_to_items(result, "utf-8")
+    local title = "References"
+    opts = opts or {}
+
+    if not next(all_items) then
+      vim.notify "No references found"
+    else
+      local list = {
+        title = title,
+        items = all_items,
+        context = {
+          method = c.LspMethods.Reference,
+          bufnr = 0,
+        },
+      }
+
+      if opts.loclist then
+        vim.fn.setloclist(0, {}, " ", list)
+        vim.cmd.lopen()
+      elseif opts.on_list then
+        assert(vim.is_callable(opts.on_list), "on_list is not a function")
+        opts.on_list(list)
+      else
+        vim.fn.setqflist({}, " ", list)
+        vim.cmd "botright copen"
+      end
+    end
   end)()
 end
 
